@@ -1,14 +1,11 @@
--- D-HUB DUPE STANDALONE — Ringan, hanya Dupe tab (BYPASSED & DEOBFUSCATED)
+-- TAWIN DUPE STANDALONE — Black & Red Theme
 local __DHubEnv = (type(getgenv)=="function" and getgenv()) or _G
-if __DHubEnv.__DHubDupeStandaloneActive then return end
 __DHubEnv.__DHubDupeStandaloneActive = true
 
 local DEV_MODE = true
 
--- [BYPASS] ปลดล็อคระบบ Key ให้ผ่านอัตโนมัติ ไม่ต้องใส่ Key / ไม่โดน Kick
-local function validateStartupKey() 
-    return true 
-end
+-- [BYPASS] Key System
+local function validateStartupKey() return true end
 
 -- ── SERVICES ─────────────────────────────────────────────────
 local S = {
@@ -34,7 +31,9 @@ end
 local GuiRoot = resolveGuiRoot()
 
 pcall(function()
-    local old = GuiRoot:FindFirstChild("DHubDupeStandalone")
+    local old = GuiRoot:FindFirstChild("TAWINDupeStandalone")
+        or GuiRoot:FindFirstChild("DHubDupeStandalone")
+        or S.CoreGui:FindFirstChild("TAWINDupeStandalone")
         or S.CoreGui:FindFirstChild("DHubDupeStandalone")
     if old then old:Destroy() end
 end)
@@ -42,23 +41,23 @@ end)
 local function Notify(text, duration)
     pcall(function()
         game:GetService("StarterGui"):SetCore("SendNotification", {
-            Title = "D-Hub Dupe", Text = tostring(text), Duration = duration or 3
+            Title = "TAWIN DUPE", Text = tostring(text), Duration = duration or 3
         })
     end)
 end
 
--- ── COLORS ───────────────────────────────────────────────────
+-- ── COLORS (BLACK & RED THEME) ───────────────────────────────
 local C = {
-    BASE    = Color3.fromRGB(13,  8,  32),
-    SURFACE = Color3.fromRGB(22, 14,  46),
-    ELEVATED= Color3.fromRGB(33, 22,  66),
-    BORDER  = Color3.fromRGB(74, 45, 128),
-    DIVIDER = Color3.fromRGB(30, 18,  58),
-    TEXT_1  = Color3.fromRGB(237,232,255),
-    TEXT_2  = Color3.fromRGB(184,159,232),
-    TEXT_3  = Color3.fromRGB(112, 85,168),
-    ACCENT  = Color3.fromRGB(139, 93,209),
-    ACCENT_D= Color3.fromRGB(106, 58,170),
+    BASE    = Color3.fromRGB(15, 15, 15),       -- ดำสนิท (พื้นหลังหลัก)
+    SURFACE = Color3.fromRGB(24, 24, 24),       -- ดำเทาเข้ม (พื้นหลังกล่อง)
+    ELEVATED= Color3.fromRGB(36, 36, 36),       -- เทาเข้ม (กล่องยกระดับ)
+    BORDER  = Color3.fromRGB(180, 30, 30),      -- แดงเข้ม (ขอบเส้น)
+    DIVIDER = Color3.fromRGB(45, 45, 45),       -- เทาเข้ม (เส้นแบ่ง)
+    TEXT_1  = Color3.fromRGB(255, 255, 255),    -- ขาวสว่าง
+    TEXT_2  = Color3.fromRGB(230, 200, 200),    -- ขาวอมชมพูแดง
+    TEXT_3  = Color3.fromRGB(160, 160, 160),    -- เทาอ่อน
+    ACCENT  = Color3.fromRGB(235, 40, 40),      -- แดงสด (สีไฮไลท์หลัก)
+    ACCENT_D= Color3.fromRGB(150, 20, 20),      -- แดงเลือดหมู (ปุ่มกด/Toggle)
     GREEN   = Color3.fromRGB(60, 200, 100),
 }
 
@@ -94,7 +93,7 @@ local function MakeDraggable(frame, handle)
 end
 
 local MainSG = Instance.new("ScreenGui", GuiRoot)
-MainSG.Name = "DHubDupeStandalone"
+MainSG.Name = "TAWINDupeStandalone"
 MainSG.ResetOnSpawn = false
 
 local activeDropdown = nil
@@ -102,7 +101,7 @@ local activeDropdown = nil
 local function BuatSection(parent, text)
     local Lbl = Instance.new("TextLabel", parent)
     Lbl.Size = UDim2.new(1, 0, 0, 20); Lbl.BackgroundTransparency = 1
-    Lbl.Font = Enum.Font.GothamBold; Lbl.TextColor3 = C.TEXT_2
+    Lbl.Font = Enum.Font.GothamBold; Lbl.TextColor3 = C.ACCENT
     Lbl.Text = text:upper(); Lbl.TextSize = 11
     Lbl.TextXAlignment = Enum.TextXAlignment.Left
 end
@@ -233,7 +232,6 @@ local function BuatInput(parent, label, placeholder, default, callback)
     return Row, InputBox
 end
 
--- Drop Amount Row: label di kiri, tombol ALL + input angka di kanan
 local function BuatDropAmount(parent, label, defaultAmount, onChanged)
     local currentAmount = defaultAmount
 
@@ -251,7 +249,6 @@ local function BuatDropAmount(parent, label, defaultAmount, onChanged)
     LabelTxt.TextColor3 = C.TEXT_2; LabelTxt.Font = Enum.Font.GothamMedium
     LabelTxt.TextSize = 11; LabelTxt.TextXAlignment = Enum.TextXAlignment.Left
 
-    -- Tombol ALL
     local AllBtn = Instance.new("TextButton", Row)
     AllBtn.Size = UDim2.new(0, 38, 0, 26); AllBtn.Position = UDim2.new(0.39, 0, 0.5, -13)
     AllBtn.BackgroundColor3 = currentAmount == nil and C.ACCENT or C.ELEVATED
@@ -259,7 +256,6 @@ local function BuatDropAmount(parent, label, defaultAmount, onChanged)
     AllBtn.Font = Enum.Font.GothamBold; AllBtn.TextSize = 11
     AllBtn.AutoButtonColor = false; Corner(AllBtn, 4)
 
-    -- Input angka
     local InputBox = Instance.new("TextBox", Row)
     InputBox.Size = UDim2.new(0, 80, 0, 26); InputBox.Position = UDim2.new(1, -94, 0.5, -13)
     InputBox.BackgroundColor3 = C.ELEVATED; Corner(InputBox, 4); Stroke(InputBox, C.DIVIDER)
@@ -471,7 +467,7 @@ AccentLine.BackgroundColor3 = C.ACCENT; AccentLine.BorderSizePixel = 0; Corner(A
 local TitleLbl = Instance.new("TextLabel", Header)
 TitleLbl.Size = UDim2.new(1, -80, 1, 0); TitleLbl.Position = UDim2.new(0, 16, 0, 0)
 TitleLbl.BackgroundTransparency = 1; TitleLbl.RichText = true
-TitleLbl.Text = "D-HUB  <font color='#EB3C3C'>DUPE</font>"
+TitleLbl.Text = "<font color='#FFFFFF'>TAWIN</font>  <font color='#FF2E2E'>DUPE</font>"
 TitleLbl.TextColor3 = C.TEXT_1; TitleLbl.Font = Enum.Font.GothamBold
 TitleLbl.TextSize = 14; TitleLbl.TextXAlignment = Enum.TextXAlignment.Left
 MakeDraggable(Root, Header)
@@ -507,7 +503,7 @@ Layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
 end)
 
 -- ── CONFIG ────────────────────────────────────────────────────
-local CONFIG_FILE = "DHuh_DupesConfig.json"
+local CONFIG_FILE = "Tawin_DupeConfig.json"
 local savedConfig = {}
 if writefile and readfile and isfile and isfile(CONFIG_FILE) then
     pcall(function()
@@ -788,7 +784,6 @@ local function buildAllCache()
     buildRuneCache()
 end
 
--- Auto hook ChildAdded
 task.spawn(function()
     local knownRunes = {}
     local function hookBackpack(bp)
@@ -1253,5 +1248,5 @@ end)
 task.spawn(function()
     task.wait(1.5)
     buildAllCache()
-    Notify("Cache siap!", 2)
+    Notify("TAWIN DUPE พร้อมใช้งาน!", 2)
 end)
